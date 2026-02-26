@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>情书 Love Letter 规则速查</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .card {
+    width: 440px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 36px 30px 40px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+  }
+
+  /* ── Title ── */
+  .title-area {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .title-area h1 {
+    font-size: 26px;
+    font-weight: 900;
+    color: #1a1a1a;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+  }
+  .title-area h1 .highlight {
+    background: linear-gradient(180deg, transparent 50%, #FFD6A0 50%);
+    padding: 0 4px;
+  }
+  .title-area .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-top: 6px;
+  }
+  .title-area .oneliner {
+    font-size: 13px;
+    color: #555;
+    margin-top: 10px;
+    line-height: 1.7;
+    padding: 10px 14px;
+    background: #FFF8EE;
+    border-radius: 8px;
+    border-left: 3px solid #F5A623;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-top: 26px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .section-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #F5A623;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+
+  /* ── List items ── */
+  .item-list {
+    list-style: none;
+    padding-left: 0;
+  }
+  .item-list li {
+    font-size: 13.5px;
+    color: #333;
+    line-height: 1.75;
+    padding: 4px 0 4px 24px;
+    position: relative;
+  }
+  .item-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #F5A623;
+    font-weight: 700;
+    font-size: 13px;
+  }
+  .item-list li .em {
+    color: #E08600;
+    font-weight: 600;
+  }
+
+  /* ── Flow steps ── */
+  .flow-box {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+  }
+  .flow-step {
+    flex: 1;
+    background: #FFF8EE;
+    border-radius: 10px;
+    padding: 14px 10px;
+    text-align: center;
+    border: 1px solid #FFE4B5;
+  }
+  .flow-step .step-icon {
+    font-size: 26px;
+    margin-bottom: 6px;
+  }
+  .flow-step .step-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #D4880F;
+    margin-bottom: 2px;
+  }
+  .flow-step .step-desc {
+    font-size: 11.5px;
+    color: #777;
+    line-height: 1.5;
+  }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    color: #F5A623;
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── Table ── */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 13px;
+  }
+  .info-table th {
+    background: #F5A623;
+    color: #fff;
+    font-weight: 600;
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 12.5px;
+  }
+  .info-table th:first-child { border-radius: 6px 0 0 0; }
+  .info-table th:last-child { border-radius: 0 6px 0 0; }
+  .info-table td {
+    padding: 7px 12px;
+    text-align: center;
+    color: #444;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .info-table tr:nth-child(even) td {
+    background: #FFFAF2;
+  }
+  .info-table tr:last-child td:first-child { border-radius: 0 0 0 6px; }
+  .info-table tr:last-child td:last-child { border-radius: 0 0 6px 0; }
+
+  /* ── Callout ── */
+  .callout {
+    background: #FFF3E0;
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin: 12px 0;
+    font-size: 13px;
+    color: #8B5E00;
+    line-height: 1.7;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .callout .callout-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .callout-warn {
+    background: #FFF8E1;
+    border: 1px solid #FFE082;
+  }
+  .callout-tip {
+    background: #E8F5E9;
+    border: 1px solid #C8E6C9;
+    color: #2E7D32;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    border: none;
+    border-top: 1px dashed #e0e0e0;
+    margin: 24px 0 0;
+  }
+
+  /* ── Tag pills ── */
+  .tags {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    font-size: 11.5px;
+    color: #F5A623;
+    border: 1px solid #F5A623;
+    border-radius: 12px;
+    padding: 2px 10px;
+    background: #FFFAF2;
+  }
+
+  /* ── Subsection ── */
+  .sub-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #D4880F;
+    margin: 14px 0 8px;
+    padding-left: 2px;
+  }
+
+  /* ── Round end cards ── */
+  .end-cards {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+  }
+  .end-card {
+    flex: 1;
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .end-card-a {
+    background: #FFF8EE;
+    border: 1px solid #FFE4B5;
+  }
+  .end-card-b {
+    background: #F3F8FF;
+    border: 1px solid #C8DEFF;
+  }
+  .end-card .ec-icon {
+    font-size: 24px;
+    margin-bottom: 6px;
+  }
+  .end-card .ec-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+  }
+  .end-card .ec-desc {
+    font-size: 11.5px;
+    color: #777;
+    line-height: 1.55;
+  }
+
+  /* ── Bottom note ── */
+  .bottom-note {
+    text-align: center;
+    font-size: 11px;
+    color: #bbb;
+    margin-top: 24px;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="infographic">
+
+  <!-- ===== TITLE ===== -->
+  <div class="title-area">
+    <h1>一次性讲清楚<span class="highlight">情书</span>规则</h1>
+    <div class="subtitle">2~6人 | 约20分钟 | 卡牌推理</div>
+    <div class="tags">
+      <span class="tag">手牌管理</span>
+      <span class="tag">身份推理</span>
+      <span class="tag">玩家淘汰</span>
+    </div>
+    <div class="oneliner">
+      扮演公主的追求者，借助宫廷角色秘密护送情书到公主手中。每人手里只有1张牌，抽1张打1张，用角色能力推理和淘汰对手！
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 1. 游戏组件 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title">游戏里有什么？</div>
+    </div>
+    <ul class="item-list">
+      <li><span class="em">角色卡 21张</span> — 多种角色，每种有特定点数和能力</li>
+      <li><span class="em">帮助卡 每人1张</span> — 列出角色点数、数量和效果</li>
+      <li><span class="em">钟情标记 若干枚</span> — 记录每轮获胜，累计达标赢游戏</li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 2. 游戏准备 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title">开局怎么准备？</div>
+    </div>
+    <ul class="item-list">
+      <li>每人发 <span class="em">1张帮助卡</span>（角色速查表）</li>
+      <li>所有角色卡 <span class="em">面朝下洗匀</span>，放桌面中央作牌库</li>
+      <li>从牌库顶 <span class="em">面朝下移除1张</span>，放一边（本轮不用）</li>
+      <li>每人从牌库 <span class="em">抽1张</span> 拿在手里，秘密查看</li>
+      <li><span class="em">最近写过信的人</span> 先开始，顺时针轮流</li>
+    </ul>
+    <div class="callout callout-warn">
+      <span class="callout-icon">&#9888;</span>
+      <span><strong>二人局额外准备：</strong>除了移除1张牌外，还要随机<strong>亮出3张牌</strong>到桌面中央（双方可见），提供额外推理信息。</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 3. 回合流程 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title">轮到我怎么玩？</div>
+    </div>
+
+    <div class="flow-box">
+      <div class="flow-step">
+        <div class="step-icon">&#127183;</div>
+        <div class="step-label">摸牌</div>
+        <div class="step-desc">从牌库摸1张<br>手牌变为2张</div>
+      </div>
+      <div class="flow-arrow">&#10132;</div>
+      <div class="flow-step">
+        <div class="step-icon">&#9997;&#65039;</div>
+        <div class="step-label">出牌</div>
+        <div class="step-desc">选1张面朝上<br>打出到面前</div>
+      </div>
+      <div class="flow-arrow">&#10132;</div>
+      <div class="flow-step">
+        <div class="step-icon">&#9889;</div>
+        <div class="step-label">执行</div>
+        <div class="step-desc">立即执行<br>牌上的效果</div>
+      </div>
+    </div>
+
+    <div class="callout callout-tip">
+      <span class="callout-icon">&#128161;</span>
+      <span>你的情书会在那张<strong>没打出的牌</strong>的角色手中，暂时由他帮你秘密护送。执行完后顺时针轮到下一位没出局的玩家。</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 4. 出局规则 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title">关于出局</div>
+    </div>
+    <ul class="item-list">
+      <li>某些牌的效果会让玩家 <span class="em">出局</span></li>
+      <li>出局玩家必须 <span class="em">亮开手牌</span></li>
+      <li>将帮助卡 <span class="em">翻到反面</span>，表示情书破裂</li>
+      <li>出局玩家本轮 <span class="em">不再行动</span></li>
+    </ul>
+    <div class="callout">
+      <span class="callout-icon">&#128203;</span>
+      <span>每次出牌后，之前打出的牌保持可见，方便所有人查看已出牌的数量进行推理。</span>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 5. 一轮怎么结束 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title">一轮怎么结束？</div>
+    </div>
+
+    <div class="end-cards">
+      <div class="end-card end-card-a">
+        <div class="ec-icon">&#128081;</div>
+        <div class="ec-title">情况A：只剩1人</div>
+        <div class="ec-desc">唯一没出局的玩家<br><strong>直接获胜</strong></div>
+      </div>
+      <div class="end-card end-card-b">
+        <div class="ec-icon">&#127183;</div>
+        <div class="ec-title">情况B：牌库抽完</div>
+        <div class="ec-desc">未出局者亮出手牌<br><strong>点数大的获胜</strong><br>（平局则同时获胜）</div>
+      </div>
+    </div>
+
+    <ul class="item-list">
+      <li>获胜者得 <span class="em">1个钟情标记</span></li>
+      <li>所有牌收回，<span class="em">重新洗牌</span> 开始新一轮</li>
+      <li>上轮获胜者成为 <span class="em">下轮起始玩家</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 6. 游戏结束 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <div class="section-title">谁赢了整场游戏？</div>
+    </div>
+    <p style="font-size:13.5px; color:#555; line-height:1.7; margin-bottom:12px;">
+      经过若干轮后，最先攒够对应数量<span style="color:#E08600;font-weight:600">钟情标记</span>的玩家获得最终胜利！
+    </p>
+    <table class="info-table">
+      <tr>
+        <th>玩家人数</th>
+        <th>2人</th>
+        <th>3人</th>
+        <th>4人</th>
+        <th>5人</th>
+        <th>6人</th>
+      </tr>
+      <tr>
+        <td style="font-weight:600;color:#D4880F;">所需标记</td>
+        <td>6枚</td>
+        <td>5枚</td>
+        <td>4枚</td>
+        <td>3枚</td>
+        <td>2枚</td>
+      </tr>
+    </table>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 注意 ===== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num" style="background:#FF8A65;">!</div>
+      <div class="section-title">注意事项</div>
+    </div>
+    <div class="callout callout-warn">
+      <span class="callout-icon">&#9888;</span>
+      <span>
+        <strong>二人局变体：</strong>开局额外亮出3张牌到桌面 | 需要6枚标记才能获胜 | 其他规则不变
+      </span>
+    </div>
+    <ul class="item-list">
+      <li>打出的牌效果 <span class="em">必须执行</span>，不能选择不执行</li>
+      <li>手牌始终保密，直到出局或牌库抽完比较</li>
+      <li>被移除的那张牌本轮 <span class="em">谁都不能看</span></li>
+      <li>建议人数 <span class="em">3~4人</span>，体验最佳</li>
+    </ul>
+  </div>
+
+  <div class="bottom-note">情书 Love Letter (2019) &middot; 规则速查</div>
+
+</div>
+
+</body>
+</html>

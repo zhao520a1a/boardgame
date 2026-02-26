@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>情书文案 知识卡片</title>
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* 3:4 页面容器 */
+.page {
+  width: 768px;
+  height: 1024px;
+  background: #fff;
+  padding: 36px 36px 28px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.page-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 页码 */
+.page-num {
+  position: absolute;
+  bottom: 14px;
+  right: 28px;
+  font-size: 12px;
+  color: #ccc;
+  font-weight: 500;
+}
+
+/* 首页标题 */
+.main-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: #222;
+  text-align: center;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+.main-title .hl {
+  background: #FFA940;
+  color: #fff;
+  padding: 2px 10px;
+  border-radius: 5px;
+  position: relative;
+  display: inline-block;
+}
+.main-title .hl::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border: 2.5px solid #E8392D;
+  border-radius: 50%;
+}
+.subtitle {
+  text-align: center;
+  font-size: 15px;
+  color: #999;
+  margin-bottom: 20px;
+}
+
+/* 续页标头 */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #FFA940;
+}
+.page-header-icon {
+  width: 32px; height: 32px;
+  background: #FFA940;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+.page-header-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+.page-header-sub {
+  font-size: 13px;
+  color: #bbb;
+  margin-left: auto;
+}
+
+/* 标签行 */
+.tag-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.tag {
+  background: #FFF7E6;
+  color: #D46B08;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 14px;
+  border: 1px solid #FFD591;
+}
+
+/* section */
+.section { margin-bottom: 16px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.section-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; height: 30px;
+  background: #FA8C16;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.section-title {
+  font-size: 19px;
+  font-weight: 700;
+  color: #333;
+}
+
+/* 内容项 */
+.item {
+  position: relative;
+  padding-left: 18px;
+  font-size: 15.5px;
+  color: #444;
+  line-height: 1.8;
+  margin-bottom: 4px;
+}
+.item::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 12px;
+  width: 7px; height: 7px;
+  background: #FA8C16;
+  border-radius: 50%;
+}
+
+/* 标签 */
+.label-tag {
+  display: inline-block;
+  background: #FA8C16;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 3px;
+  margin-right: 4px;
+}
+.label-tag.green  { background: #52C41A; }
+.label-tag.red    { background: #F5222D; }
+.label-tag.blue   { background: #1890FF; }
+.label-tag.purple { background: #722ED1; }
+
+/* 高亮文字 */
+.hl-text { color: #FA8C16; font-weight: 700; }
+.hl-red  { color: #E8392D; font-weight: 700; }
+
+/* 提示框 */
+.tip-box {
+  background: #FFF7E6;
+  border-left: 3.5px solid #FA8C16;
+  padding: 10px 14px;
+  margin: 10px 0 6px;
+  border-radius: 0 8px 8px 0;
+  font-size: 14px;
+  color: #D46B08;
+  line-height: 1.7;
+}
+.tip-box.blue-tip {
+  background: #E6F7FF;
+  border-left-color: #1890FF;
+  color: #096DD9;
+}
+.tip-box.red-tip {
+  background: #FFF1F0;
+  border-left-color: #F5222D;
+  color: #CF1322;
+}
+.tip-box.green-tip {
+  background: #F6FFED;
+  border-left-color: #52C41A;
+  color: #389E0D;
+}
+
+/* 分割线 */
+.divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 14px 0;
+}
+
+/* 子标题 */
+.sub-title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #333;
+  margin: 10px 0 8px;
+  padding-left: 6px;
+}
+.sub-title::before {
+  content: '▸ ';
+  color: #FA8C16;
+}
+
+/* 表格 */
+.mini-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  margin: 8px 0 12px;
+}
+.mini-table th {
+  background: #FFF7E6;
+  color: #D46B08;
+  font-weight: 600;
+  padding: 7px 12px;
+  text-align: center;
+  border: 1px solid #FFD591;
+}
+.mini-table td {
+  padding: 7px 12px;
+  text-align: center;
+  border: 1px solid #f0f0f0;
+  color: #555;
+}
+
+.footer-note {
+  text-align: center;
+  font-size: 12px;
+  color: #bbb;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+/* 高亮框 */
+.highlight-box {
+  background: linear-gradient(135deg, #FFF7E6 0%, #FFE7BA 100%);
+  border: 2px solid #FFA940;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin: 12px 0;
+}
+.highlight-box .hb-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #D46B08;
+  margin-bottom: 8px;
+}
+.highlight-box .item {
+  font-size: 15px;
+}
+
+.spacer { flex: 1; }
+
+/* 正文块 */
+.text-block {
+  background: #FAFAFA;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 8px 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.9;
+}
+.text-block p {
+  margin-bottom: 8px;
+}
+.text-block p:last-child {
+  margin-bottom: 0;
+}
+  </style>
+</head>
+<body>
+
+<!-- 第1页：标题 + 标题公式 -->
+<div class="page" id="page1" role="img" aria-label="page1">
+  <div class="page-content">
+    <div class="main-title">一次性讲清楚<span class="hl">情书</span>文案</div>
+    <div class="subtitle">小红书爆款笔记 · 标题公式 · 正文结构 · Hashtag策略</div>
+    <div class="tag-row">
+      <span class="tag">桌游推荐</span>
+      <span class="tag">小红书文案</span>
+      <span class="tag">爆款公式</span>
+      <span class="tag">情书桌游</span>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">1</span>
+        <span class="section-title">4种爆款标题公式</span>
+      </div>
+      <div class="item"><span class="label-tag purple">悬念型</span> 只剩一张牌 全桌人屏住呼吸 这局太窒息了</div>
+      <div class="item"><span class="label-tag blue">数字型</span> <span class="hl-text">1张牌</span>就能玩的推理桌游 <span class="hl-text">20分钟</span>上头到停不下来</div>
+      <div class="item"><span class="label-tag green">共鸣型</span> 约会不知道干嘛？这盒牌让两个人心跳加速</div>
+      <div class="item"><span class="label-tag red">反转型</span> 以为是过家家 结果被男朋友一轮淘汰出局</div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">2</span>
+        <span class="section-title">热点节日适配标题</span>
+      </div>
+      <div class="highlight-box">
+        <div class="hb-title">情人节 / 七夕 热点标题</div>
+        <div class="item"><span class="label-tag red">情人节</span> 情人节最浪漫的事 是用一张牌猜透你的心</div>
+        <div class="item"><span class="label-tag red">七夕</span> 七夕约会不踩雷 这盒宫廷情书比看电影刺激十倍</div>
+      </div>
+      <div class="tip-box blue-tip">热点期间发布可获得 <span style="font-weight:700">3-5倍流量加成</span>，建议提前1-2天发布抢占先机</div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">3</span>
+        <span class="section-title">正文6段黄金结构</span>
+      </div>
+      <div class="item"><span class="label-tag">第1段</span> <span class="hl-text">场景代入</span> — 用故事开场引发共鸣</div>
+      <div class="item"><span class="label-tag">第2段</span> <span class="hl-text">规则简化</span> — 打消"桌游太难"的顾虑</div>
+      <div class="item"><span class="label-tag">第3段</span> <span class="hl-text">亮点展示</span> — 推理博弈带来的快感</div>
+      <div class="item"><span class="label-tag">第4段</span> <span class="hl-text">场景列举</span> — 覆盖多种使用场景</div>
+      <div class="item"><span class="label-tag">第5段</span> <span class="hl-text">进阶钩子</span> — 引导看图/收藏</div>
+      <div class="item"><span class="label-tag">第6段</span> <span class="hl-text">行动召唤</span> — 评论区互动引导</div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="footer-note">情书 Love Letter · 小红书文案指南</div>
+  </div>
+  <span class="page-num">1 / 3</span>
+</div>
+
+<!-- 第2页：Hashtag策略 + 正文示例 -->
+<div class="page" id="page2" role="img" aria-label="page2">
+  <div class="page-content">
+    <div class="page-header">
+      <span class="page-header-icon">文</span>
+      <span class="page-header-text">情书文案 · Hashtag策略</span>
+      <span class="page-header-sub">小红书爆款</span>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">4</span>
+        <span class="section-title">Hashtag分层策略（12个）</span>
+      </div>
+      <div class="sub-title">垂类标签 — 精准触达桌游圈</div>
+      <div class="item">#桌游推荐 #桌游安利 #卡牌游戏 #双人桌游</div>
+      <div class="sub-title">泛流量标签 — 扩大曝光池</div>
+      <div class="item">#情人节约会 #聚会玩什么 #宅家好物 #约会攻略</div>
+      <div class="sub-title">情绪标签 — 共鸣与传播</div>
+      <div class="item">#上头桌游 #聚会神器 #心跳加速</div>
+      <div class="sub-title">专属标签 — 品牌沉淀</div>
+      <div class="item">#情书桌游</div>
+      <div class="tip-box">标签顺序建议：<span class="hl-text">垂类 → 泛流量 → 情绪 → 专属</span>，共 10-12 个最佳</div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">5</span>
+        <span class="section-title">正文第1-3段示例</span>
+      </div>
+      <div class="text-block">
+        <p><span class="hl-text">【场景代入】</span>上周和朋友约了个下午茶，本来说好聊天叙旧的，结果掏出这盒《情书》直接玩了三个小时没停，走的时候每个人都在问链接</p>
+        <p><span class="hl-text">【规则简化】</span>别被"桌游"两个字吓到，这游戏规则简单到离谱——手里永远只有1张牌，摸1张打1张，执行效果，就这三步，翻第二张图看教程，真的10秒就学会</p>
+        <p><span class="hl-text">【亮点展示】</span>但简单不代表无聊！每张牌都是一次推理博弈，用守卫猜对别人的牌？直接淘汰，被王子强制弃牌？公主掉了就出局，全程心理战，猜对的快感真的会上瘾</p>
+      </div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="footer-note">情书 Love Letter · 小红书文案指南</div>
+  </div>
+  <span class="page-num">2 / 3</span>
+</div>
+
+<!-- 第3页：正文4-6段 + 总结 -->
+<div class="page" id="page3" role="img" aria-label="page3">
+  <div class="page-content">
+    <div class="page-header">
+      <span class="page-header-icon">文</span>
+      <span class="page-header-text">情书文案 · 正文模板</span>
+      <span class="page-header-sub">小红书爆款</span>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">6</span>
+        <span class="section-title">正文第4-6段示例</span>
+      </div>
+      <div class="text-block">
+        <p><span class="hl-text">【场景列举】</span>什么时候玩都合适：</p>
+        <p>情侣约会 → 两人对战 浪漫中带点博弈心跳</p>
+        <p>闺蜜下午茶 → 3-4人刚好 笑到下巴脱臼</p>
+        <p>宅家无聊 → 比刷手机有意思一百倍</p>
+        <p>家庭聚会 → 10岁就能玩 老少通吃</p>
+        <p>出门随身带 → 一小盒塞口袋 随时开局</p>
+      </div>
+      <div class="text-block">
+        <p><span class="hl-text">【进阶钩子】</span>新手能玩 老手更上头，翻到最后一张图 我总结了5个进阶技巧，学会记牌和虚张声势 胜率直接翻倍，建议先收藏 下次开局前看一遍</p>
+        <p><span class="hl-text">【行动召唤】</span>20分钟一局 规则比狼人杀简单十倍，情人节/聚会必备 赶紧囤一盒，评论区告诉我 你们最喜欢用哪个角色？我先说——侍女保命yyds</p>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <div class="section">
+      <div class="section-header">
+        <span class="section-num">7</span>
+        <span class="section-title">发帖要点总结</span>
+      </div>
+      <div class="highlight-box" style="border-color: #F5222D; background: linear-gradient(135deg, #FFF1F0 0%, #FFCCC7 100%);">
+        <div class="hb-title" style="color: #CF1322;">核心要点</div>
+        <div class="item"><span class="hl-red">标题</span> 选用悬念/数字型，热点期间用适配标题</div>
+        <div class="item"><span class="hl-red">正文</span> 6段结构，场景代入 → 规则简化 → 行动召唤</div>
+        <div class="item"><span class="hl-red">标签</span> 12个分层，垂类+泛流量+情绪+专属</div>
+        <div class="item"><span class="hl-red">时机</span> 情人节/七夕前1-2天发布抢流量</div>
+      </div>
+      <div class="tip-box green-tip">封面图选高点击率风格，配合引导语"翻第X张图"提升完读率</div>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="footer-note">情书 Love Letter · 小红书文案指南 · 收藏备用</div>
+  </div>
+  <span class="page-num">3 / 3</span>
+</div>
+
+</body>
+</html>
