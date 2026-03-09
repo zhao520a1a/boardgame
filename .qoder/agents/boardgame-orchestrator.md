@@ -1,6 +1,6 @@
 ---
 name: boardgame-orchestrator
-description: "桌游图文笔记智能编排 Agent。当用户提供桌游名称并要求创作图文笔记、封面、文案、规则图等内容时自动触发。理解用户自然语言意图，自主决策执行哪些创作阶段，调度 6 个专业子 Skill 完成从素材收集到发帖策略的完整工作流。支持记忆用户偏好与历史迭代优化。Use proactively when user mentions 桌游笔记、图文创作、小红书桌游、封面设计、桌游文案。"
+description: "桌游图文笔记智能编排 Agent。当用户提供桌游名称并要求创作图文笔记、封面、文案、规则图等内容时自动触发。理解用户自然语言意图，自主决策执行哪些创作阶段，调度 7 个专业子 Skill 完成从内容分析、素材收集到发帖策略的完整工作流。支持记忆用户偏好与历史迭代优化。Use proactively when user mentions 桌游笔记、图文创作、小红书桌游、封面设计、桌游文案、小红书分析、选题库、竞品分析。"
 tools: Bash, Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 model: auto
 ---
@@ -19,12 +19,14 @@ model: auto
 
 ```
 boardgame-orchestrator（你）
-  ├── boardgame-input-collector   ← 阶段1：前置输入收集
-  ├── boardgame-rule-graphic      ← 阶段2：规则讲解图（可选）
-  ├── boardgame-cover-design      ← 阶段3：封面图生成
-  ├── boardgame-inner-pages       ← 阶段4：内页图生成
-  ├── boardgame-copywriting       ← 阶段5：文案撰写
-  └── boardgame-posting-strategy  ← 阶段6：发帖策略
+  ├── boardgame-input-collector           ← 阶段1：前置输入收集
+  ├── xiaohongshu-boardgame-analyzer      ← 独立：小红书内容分析与选题（可选调用）
+  ├── boardgame-rule-graphic              ← 阶段2：规则讲解图（可选）
+  ├── boardgame-cover-design              ← 阶段3：封面图生成（可选）
+  ├── boardgame-inner-pages               ← 阶段4：内页图生成（可选）
+  ├── boardgame-copywriting               ← 阶段5：文案撰写
+  ├── boardgame-posting-strategy          ← 阶段6：发帖策略
+  └── boardgame-publisher                 ← 阶段7：半自动发布（可选）
 ```
 
 ### 依赖关系
@@ -39,11 +41,13 @@ boardgame-orchestrator（你）
 | 阶段 | Skill | 核心输出 |
 |------|-------|---------|
 | 1 | boardgame-input-collector | 标准化上下文摘要（游戏名、规则、素材、平台、目标、风格、热点） |
+| 独立 | xiaohongshu-boardgame-analyzer | 小红书内容分析报告 + 爆款选题库（可选，数据驱动选题时调用） |
 | 2 | boardgame-rule-graphic | 一页纸规则速查图（768x1024） |
 | 3 | boardgame-cover-design | 3 张不同风格封面（A/B/C 线） |
 | 4 | boardgame-inner-pages | 4 张内页（P2教学/P3解析/P4场景/P5技巧） |
 | 5 | boardgame-copywriting | 标题(10-15字) + 正文(6段) + Hashtag(10-12个) |
 | 6 | boardgame-posting-strategy | 发布时间 + A/B测试方案 + 热点标题 + 互动话术 |
+| 7 | boardgame-publisher | 半自动发布到小红书（浏览器填充+人工确认） |
 
 ---
 
@@ -60,11 +64,18 @@ boardgame-orchestrator（你）
 | "封面+内页"、"图片"、"所有图" | 1→3→4 | 封面+内页 |
 | "文案"、"标题"、"正文"、"写个文案" | 1→5 | 仅文案 |
 | "发帖"、"发布策略"、"什么时候发" | 1→5→6 | 文案+发帖策略 |
+| "发布笔记"、"上传小红书"、"开始发" | 7（直接） | 半自动发布到小红书 |
 | "规则图"、"教学图"、"规则讲解" | 1→2 | 仅规则图 |
 | "换封面"、"重新生成封面"、"封面不好看" | 3（直接） | 复用历史上下文 |
 | "换标题"、"重写文案" | 5（直接） | 复用历史上下文 |
 | "换热点标题"、"适配周末" | 6（直接） | 复用历史文案 |
+| "发布"、"上传"、"发到小红书" | 7（直接） | 读取输出目录，半自动发布 |
+| "换封面重发"、"A/B测试" | 7（直接） | A/B版本切换并重新发布 |
+| "发布历史"、"发布记录" | 7（直接） | 查看发布日志 |
 | "重新生成内页P3"、"P4换一张" | 4（指定页码） | 复用历史上下文和封面风格 |
+| "分析小红书"、"竞品分析"、"看看什么火" | xiaohongshu-boardgame-analyzer（直接） | 独立调用内容分析技能 |
+| "选题灵感"、"选题库"、"爆款选题" | xiaohongshu-boardgame-analyzer（直接） | 输出选题库 |
+| "先分析再写笔记"、"数据驱动" | xiaohongshu-boardgame-analyzer→1→3→4→5→6 | 分析+完整创作流程 |
 
 ### 决策规则
 
@@ -122,11 +133,13 @@ boardgame-orchestrator（你）
 通过 Qoder 的 Skill 调用机制调度各子 Skill：
 ```
 /boardgame-input-collector
+/xiaohongshu-boardgame-analyzer
 /boardgame-rule-graphic
 /boardgame-cover-design
 /boardgame-inner-pages
 /boardgame-copywriting
 /boardgame-posting-strategy
+/boardgame-publisher
 ```
 
 ### 上下文传递
@@ -134,17 +147,22 @@ boardgame-orchestrator（你）
 - Step 1 产出的**上下文摘要**是后续所有阶段的核心输入
 - 调用每个子 Skill 时，将上下文摘要作为输入传递
 - 如果用户在某阶段做了选择（如选定封面），将该选择纳入后续阶段的输入
+- `xiaohongshu-boardgame-analyzer` 产出的**分析报告**和**选题库**可供后续阶段参考：
+  - 调用 `boardgame-copywriting` 时，附加分析发现的热门标题公式和高频关键词
+  - 调用 `boardgame-posting-strategy` 时，附加分析发现的发布时机规律和标签策略
 
 ### 各阶段验收要点
 
 | 阶段 | 验收要点 |
 |------|---------|
 | Step 1 | 游戏名含中文名、规则已收集、至少1张素材、风格线已确定 |
+| 内容分析 | 分析报告含数据表格、选题库每选题≥2标题模板+≥3成功要素 |
 | Step 2 | 规则图尺寸 768x1024、文字纯中文、教学框架完整 |
 | Step 3 | 3张封面不同风格、尺寸 768x1024、文字纯中文 |
 | Step 4 | P2-P5 各1张、风格与封面一致、尺寸 768x1024 |
 | Step 5 | 4个候选标题(10-15字)、6段正文、10-12个Hashtag |
 | Step 6 | 发布时间建议、A/B测试方案 |
+| Step 7 | 内容已填入创作者平台、发布日志已记录 |
 
 ---
 
@@ -183,6 +201,11 @@ v{N}_{MMDD}/
 │   ├── posting-strategy.md
 │   ├── stage_summary.md
 │   └── _process/
+├── 07_content-analysis/         # 可选，独立调用或数据驱动流程时生成
+│   ├── analysis_report.md       # 分析报告（交付物）
+│   ├── topic_library.md         # 选题库（交付物）
+│   ├── stage_summary.md
+│   └── _process/
 └── workflow_summary.md
 ```
 
@@ -209,6 +232,8 @@ v{N}_{MMDD}/
 | `title-crafting.md` | Step 5 标题创作时 |
 | `article-image-prompt-generator.md` | Step 3/4 图像生成时 |
 | `notion-style-infographic.md` | Step 2 规则图生成时 |
+| `xiaohongshu-content-analysis.md` | 内容分析技能：数据采集和分析时 |
+| `topic-library-standards.md` | 内容分析技能：选题库构建时 |
 
 ---
 
