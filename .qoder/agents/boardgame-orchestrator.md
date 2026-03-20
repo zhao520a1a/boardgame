@@ -25,8 +25,8 @@ boardgame-orchestrator（你）
   ├── boardgame-cover-design              ← 阶段3：封面图生成（可选）
   ├── boardgame-inner-pages               ← 阶段4：内页图生成（可选）
   ├── boardgame-copywriting               ← 阶段5：文案撰写
-  ├── boardgame-posting-strategy          ← 阶段6：发帖策略
-  └── boardgame-publisher                 ← 阶段7：半自动发布（可选）
+  └── boardgame-posting-strategy          ← 阶段6：发帖策略
+  # └── boardgame-publisher                 ← 阶段7：半自动发布（可选）[已临时禁用]
 ```
 
 ### 依赖关系
@@ -47,7 +47,6 @@ boardgame-orchestrator（你）
 | 4 | boardgame-inner-pages | 4 张内页（P2教学/P3解析/P4场景/P5技巧） |
 | 5 | boardgame-copywriting | 标题(10-15字) + 正文(6段) + Hashtag(10-12个) |
 | 6 | boardgame-posting-strategy | 发布时间 + A/B测试方案 + 热点标题 + 互动话术 |
-| 7 | boardgame-publisher | 半自动发布到小红书（浏览器填充+人工确认） |
 
 ---
 
@@ -64,14 +63,14 @@ boardgame-orchestrator（你）
 | "封面+内页"、"图片"、"所有图" | 1→3→4 | 封面+内页 |
 | "文案"、"标题"、"正文"、"写个文案" | 1→5 | 仅文案 |
 | "发帖"、"发布策略"、"什么时候发" | 1→5→6 | 文案+发帖策略 |
-| "发布笔记"、"上传小红书"、"开始发" | 7（直接） | 半自动发布到小红书 |
+| "发布笔记"、"上传小红书"、"开始发" | 6（直接） | 输出发布策略和发布材料清单 |
 | "规则图"、"教学图"、"规则讲解" | 1→2 | 仅规则图 |
 | "换封面"、"重新生成封面"、"封面不好看" | 3（直接） | 复用历史上下文 |
 | "换标题"、"重写文案" | 5（直接） | 复用历史上下文 |
 | "换热点标题"、"适配周末" | 6（直接） | 复用历史文案 |
-| "发布"、"上传"、"发到小红书" | 7（直接） | 读取输出目录，半自动发布 |
-| "换封面重发"、"A/B测试" | 7（直接） | A/B版本切换并重新发布 |
-| "发布历史"、"发布记录" | 7（直接） | 查看发布日志 |
+| "发布"、"上传"、"发到小红书" | 6（直接） | 输出发布策略和发布材料清单 |
+| "换封面重发"、"A/B测试" | 6（直接） | 输出A/B测试方案 |
+| "发布历史"、"发布记录" | 6（直接） | 查看发布历史建议 |
 | "重新生成内页P3"、"P4换一张" | 4（指定页码） | 复用历史上下文和封面风格 |
 | "分析小红书"、"竞品分析"、"看看什么火" | xiaohongshu-boardgame-analyzer（直接） | 独立调用内容分析技能 |
 | "选题灵感"、"选题库"、"爆款选题" | xiaohongshu-boardgame-analyzer（直接） | 输出选题库 |
@@ -139,7 +138,7 @@ boardgame-orchestrator（你）
 /boardgame-inner-pages
 /boardgame-copywriting
 /boardgame-posting-strategy
-/boardgame-publisher
+# /boardgame-publisher  [已临时禁用]
 ```
 
 ### 上下文传递
@@ -161,60 +160,47 @@ boardgame-orchestrator（你）
 | Step 3 | 3张封面不同风格、尺寸 768x1024、文字纯中文 |
 | Step 4 | P2-P5 各1张、风格与封面一致、尺寸 768x1024 |
 | Step 5 | 4个候选标题(10-15字)、6段正文、10-12个Hashtag |
-| Step 6 | 发布时间建议、A/B测试方案 |
-| Step 7 | 内容已填入创作者平台、发布日志已记录 |
+| Step 6 | 发布时间建议、A/B测试方案、发布材料清单 |
+# | Step 7 | 内容已填入创作者平台、发布日志已记录 |  [已临时禁用]
 
 ---
 
 ## 五、文件管理
 
-遵循 `stage-data-management.md` 规则：
+### 默认模式（简化）
+
+所有交付物直接放入版本文件夹，无需子目录：
 
 ```
 v{N}_{MMDD}/
-├── 01_input-collection/
-│   ├── context_summary.md      # 上下文摘要（交付物）
-│   ├── stage_summary.md
-│   └── _process/
-├── 02_rule-graphic/             # 可选，跳过时仅含 stage_summary.md
-│   ├── rule-graphic.png
-│   ├── stage_summary.md
-│   └── _process/
-├── 03_cover-design/
-│   ├── cover-A.png
-│   ├── cover-B.png
-│   ├── cover-C.png
-│   ├── stage_summary.md
-│   └── _process/
-├── 04_inner-pages/
-│   ├── P2-teaching.png
-│   ├── P3-analysis.png
-│   ├── P4-scene.png
-│   ├── P5-tips.png
-│   ├── stage_summary.md
-│   └── _process/
-├── 05_copywriting/
-│   ├── final-copy.md           # 标题+正文+Hashtag
-│   ├── stage_summary.md
-│   └── _process/
-├── 06_posting-strategy/
-│   ├── posting-strategy.md
-│   ├── stage_summary.md
-│   └── _process/
-├── 07_content-analysis/         # 可选，独立调用或数据驱动流程时生成
-│   ├── analysis_report.md       # 分析报告（交付物）
-│   ├── topic_library.md         # 选题库（交付物）
-│   ├── stage_summary.md
-│   └── _process/
-└── workflow_summary.md
+├── context_summary.md          # 上下文摘要
+├── rule-graphic.png            # 规则图（可选）
+├── cover-A.png                 # 封面 A/B/C
+├── cover-B.png
+├── cover-C.png
+├── P2-teaching.png             # 内页 P2-P5
+├── P3-analysis.png
+├── P4-scene.png
+├── P5-tips.png
+├── final-copy.md               # 文案（标题+正文+Hashtag）
+├── posting-strategy.md         # 发帖策略
+├── analysis_report.md          # 分析报告（可选）
+└── topic_library.md            # 选题库（可选）
 ```
 
+### 进阶模式（用户手动指定）
+
+当用户明确要求使用 `stage-data-management.md` 规范时，采用分阶段目录结构：
+- 每阶段独立文件夹：`{NN}_{stage-keyword}/`
+- 交付物放阶段根部，过程数据放 `_process/`
+- 每阶段含 `stage_summary.md`，版本根目录含 `workflow_summary.md`
+
+详见 `.qoder/rules/stage-data-management.md`。
+
 ### 关键约束
-- 最终交付物放阶段根部，过程数据放 `_process/`
-- 跨阶段传递通过文件复制到下游 `_process/`
-- 跳过的阶段仍建文件夹，仅含 `stage_summary.md` 标记"跳过"及原因
-- 每个阶段完成后生成 `stage_summary.md`
-- 全流程完成后生成 `workflow_summary.md`
+- 版本文件夹命名：`v{N}_{MMDD}`（参见 `version-control.md`）
+- 默认模式下无需 `stage_summary.md` 和 `workflow_summary.md`
+- 迭代修改时在同一版本文件夹内覆盖或追加文件
 
 ---
 
@@ -259,9 +245,13 @@ v{N}_{MMDD}/
 
 **带参数启动**：
 ```
-桌游名称：《璀璨宝石》
-推广目标：涨粉
+桌游名称：《伪人测试》
+推广目标：涨粉 + 提高互动率
+规则依据：严格按照伪人测试规则.md
+素材资源：[附图]
+热点适配：清明节，参考"上坟烧报纸，糊弄鬼呢！"的幽默风格
 风格偏好：文艺调性
+
 ```
 
 **迭代修改**：

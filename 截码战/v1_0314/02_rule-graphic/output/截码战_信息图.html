@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+}
+
+.page {
+  width: 768px;
+  height: 1024px;
+  background: #ffffff;
+  padding: 36px 36px 28px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.page-content { flex: 1; display: flex; flex-direction: column; }
+.page-num {
+  position: absolute;
+  bottom: 14px;
+  right: 28px;
+  font-size: 12px;
+  color: #ccc;
+  font-weight: 500;
+}
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #F5A623;
+}
+.page-header-icon {
+  width: 32px; height: 32px;
+  background: #F5A623;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 700;
+}
+.page-header-text {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+}
+.spacer { flex: 1; }
+
+.title-area {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.title-area h1 {
+  font-size: 26px;
+  font-weight: 900;
+  color: #1a1a1a;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.title-area h1 .highlight {
+  background: linear-gradient(180deg, transparent 50%, #FFD6A0 50%);
+  padding: 0 4px;
+}
+.title-area .subtitle {
+  font-size: 13px;
+  color: #888;
+  margin-top: 6px;
+}
+.title-area .oneliner {
+  font-size: 13px;
+  color: #555;
+  margin-top: 10px;
+  line-height: 1.7;
+  padding: 10px 14px;
+  background: #FFF8EE;
+  border-radius: 8px;
+  border-left: 3px solid #F5A623;
+}
+
+.section { margin-top: 26px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.section-num {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #F5A623;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.section-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.item-list {
+  list-style: none;
+  padding-left: 0;
+}
+.item-list li {
+  font-size: 13.5px;
+  color: #333;
+  line-height: 1.75;
+  padding: 4px 0 4px 24px;
+  position: relative;
+}
+.item-list li::before {
+  content: '\2713';
+  position: absolute;
+  left: 0;
+  color: #F5A623;
+  font-weight: 700;
+  font-size: 13px;
+}
+.item-list li .em {
+  color: #E08600;
+  font-weight: 600;
+}
+
+.flow-box {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+.flow-step {
+  flex: 1;
+  background: #FFF8EE;
+  border-radius: 10px;
+  padding: 14px 10px;
+  text-align: center;
+  border: 1px solid #FFE4B5;
+}
+.flow-step .step-icon {
+  font-size: 26px;
+  margin-bottom: 6px;
+}
+.flow-step .step-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #D4880F;
+  margin-bottom: 2px;
+}
+.flow-step .step-desc {
+  font-size: 11.5px;
+  color: #777;
+  line-height: 1.5;
+}
+.flow-arrow {
+  display: flex;
+  align-items: center;
+  color: #F5A623;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 13px;
+}
+.info-table th {
+  background: #F5A623;
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 12.5px;
+}
+.info-table th:first-child { border-radius: 6px 0 0 0; }
+.info-table th:last-child { border-radius: 0 6px 0 0; }
+.info-table td {
+  padding: 7px 12px;
+  text-align: center;
+  color: #444;
+  border-bottom: 1px solid #f0f0f0;
+}
+.info-table tr:nth-child(even) td { background: #FFFAF2; }
+.info-table tr:last-child td:first-child { border-radius: 0 0 0 6px; }
+.info-table tr:last-child td:last-child { border-radius: 0 0 6px 0; }
+
+.callout {
+  background: #FFF3E0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: #8B5E00;
+  line-height: 1.7;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.callout .callout-icon {
+  font-size: 16px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.callout-warn {
+  background: #FFF8E1;
+  border: 1px solid #FFE082;
+}
+.callout-tip {
+  background: #E8F5E9;
+  border: 1px solid #C8E6C9;
+  color: #2E7D32;
+}
+
+.divider {
+  border: none;
+  border-top: 1px dashed #e0e0e0;
+  margin: 24px 0 0;
+}
+
+.tags {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+.tag {
+  font-size: 11.5px;
+  color: #F5A623;
+  border: 1px solid #F5A623;
+  border-radius: 12px;
+  padding: 2px 10px;
+  background: #FFFAF2;
+}
+
+.sub-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #D4880F;
+  margin: 14px 0 8px;
+  padding-left: 2px;
+}
+
+.end-cards {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
+.end-card {
+  flex: 1;
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.end-card-a {
+  background: #FFF8EE;
+  border: 1px solid #FFE4B5;
+}
+.end-card-b {
+  background: #F3F8FF;
+  border: 1px solid #C8DEFF;
+}
+.end-card .ec-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+.end-card .ec-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 4px;
+}
+.end-card .ec-desc {
+  font-size: 11.5px;
+  color: #777;
+  line-height: 1.55;
+}
+
+.bottom-note {
+  text-align: center;
+  font-size: 11px;
+  color: #bbb;
+  margin-top: 24px;
+  letter-spacing: 1px;
+}
+.footer-note {
+  text-align: center;
+  font-size: 12px;
+  color: #bbb;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.page .section-title { font-size: 19px; }
+.page .item-list li { font-size: 15px; }
+.page .flow-step .step-label { font-size: 16px; }
+.page .callout { font-size: 14px; }
+.page .info-table { font-size: 14px; }
+.page .section-num { width: 30px; height: 30px; font-size: 16px; }
+</style>
+</head>
+<body>
+<!-- 第1页：主题 + 目标 + 准备 -->
+<div class="page" id="page1" role="img" aria-label="page1">
+  <div class="page-content">
+    <div class="title-area">
+      <h1>一次性讲清楚<span class="highlight">截码战</span>规则</h1>
+      <div class="subtitle">4-8人 | 30分钟 | 团队推理 | 12岁+</div>
+      <div class="tags">
+        <span class="tag">隐晦描述</span>
+        <span class="tag">密码传递</span>
+        <span class="tag">团队对抗</span>
+      </div>
+      <div class="oneliner">两队互相传递密码，既要让队友猜对，又要防止对方截获！扮演特工，在敌方监听下安全传递加密信息。</div>
+    </div>
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">1</div>
+        <div class="section-title">游戏目标是什么？</div>
+      </div>
+      <div class="end-cards">
+        <div class="end-card end-card-a">
+          <div class="ec-icon">🎯</div>
+          <div class="ec-title">获胜条件</div>
+          <div class="ec-desc">获得2个拦截指示物<br>成功破解对方密码</div>
+        </div>
+        <div class="end-card end-card-b">
+          <div class="ec-icon">⚠️</div>
+          <div class="ec-title">失败条件</div>
+          <div class="ec-desc">获得2个错误指示物<br>队友猜错己方密码</div>
+        </div>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">2</div>
+        <div class="section-title">开局怎么准备？</div>
+      </div>
+      <ul class="item-list">
+        <li><span class="em">分队入座</span> — 两队面对面，中间用挡板隔开</li>
+        <li><span class="em">抽取题目卡</span> — 每队随机4张，插入己方挡板（对方看不到）</li>
+        <li><span class="em">准备密码卡</span> — 白队/黑队密码卡分别洗混备用</li>
+        <li><span class="em">分发记录纸</span> — 每队一张，记录提示词和猜测</li>
+      </ul>
+    </div>
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">3</div>
+        <div class="section-title">游戏组件有哪些？</div>
+      </div>
+      <table class="info-table">
+        <tr><th>组件</th><th>数量</th><th>用途</th></tr>
+        <tr><td>题目卡</td><td>48张</td><td>正反面共4个词语</td></tr>
+        <tr><td>密码卡</td><td>白24+黑24</td><td>显示3个数字密码</td></tr>
+        <tr><td>挡板</td><td>2个</td><td>遮挡对方视线</td></tr>
+        <tr><td>拦截指示物</td><td>白色若干</td><td>成功拦截时获得</td></tr>
+        <tr><td>错误指示物</td><td>黑色若干</td><td>队友猜错时获得</td></tr>
+      </table>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="footer-note">截码战 Decrypto</div>
+  </div>
+  <span class="page-num">1 / 3</span>
+</div>
+
+<!-- 第2页：核心回合流程 -->
+<div class="page" id="page2" role="img" aria-label="page2">
+  <div class="page-content">
+    <div class="page-header">
+      <span class="page-header-icon">截</span>
+      <span class="page-header-text">截码战</span>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">4</div>
+        <div class="section-title">一回合怎么玩？</div>
+      </div>
+      <div class="flow-box">
+        <div class="flow-step">
+          <div class="step-icon">👤</div>
+          <div class="step-label">选加密者</div>
+          <div class="step-desc">每队各选一人<br>每回合轮换</div>
+        </div>
+        <div class="flow-arrow">&#10132;</div>
+        <div class="flow-step">
+          <div class="step-icon">🎴</div>
+          <div class="step-label">抽密码卡</div>
+          <div class="step-desc">加密者抽取<br>仅自己可看</div>
+        </div>
+        <div class="flow-arrow">&#10132;</div>
+        <div class="flow-step">
+          <div class="step-icon">✍️</div>
+          <div class="step-label">写提示词</div>
+          <div class="step-desc">为3个数字<br>各写一个提示</div>
+        </div>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">5</div>
+        <div class="section-title">猜测环节怎么进行？</div>
+      </div>
+      <ul class="item-list">
+        <li><span class="em">白队加密者</span>念出3个提示词，黑队记录</li>
+        <li><span class="em">黑队先猜</span> — 尝试拦截白队密码
+          <ul style="margin-top:6px;padding-left:20px;list-style:none;">
+            <li style="padding-left:20px;">猜对 → 黑队获得<span class="em">拦截指示物</span></li>
+            <li style="padding-left:20px;">猜错 → 轮到白队队友猜</li>
+          </ul>
+        </li>
+        <li><span class="em">白队队友猜</span> — 根据提示猜己方密码
+          <ul style="margin-top:6px;padding-left:20px;list-style:none;">
+            <li style="padding-left:20px;">猜对 → 无事发生</li>
+            <li style="padding-left:20px;">猜错 → 白队获得<span class="em">错误指示物</span></li>
+          </ul>
+        </li>
+        <li><span class="em">公布答案</span> — 加密者公布正确密码，双方记录</li>
+        <li><span class="em">交换回合</span> — 黑队加密者念提示，重复上述流程</li>
+      </ul>
+    </div>
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">6</div>
+        <div class="section-title">回合结束判定</div>
+      </div>
+      <ul class="item-list">
+        <li>检查是否有队伍达成<span class="em">胜利/失败条件</span></li>
+        <li>若未结束，密码卡放回牌库，换人当加密者</li>
+        <li>最多进行<span class="em">8轮</span>，未分胜负则进入平局处理</li>
+      </ul>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="footer-note">截码战 Decrypto</div>
+  </div>
+  <span class="page-num">2 / 3</span>
+</div>
+
+<!-- 第3页：提示词规则 + 策略 -->
+<div class="page" id="page3" role="img" aria-label="page3">
+  <div class="page-content">
+    <div class="page-header">
+      <span class="page-header-icon">截</span>
+      <span class="page-header-text">截码战</span>
+    </div>
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">7</div>
+        <div class="section-title">提示词有什么限制？</div>
+      </div>
+      <div class="callout callout-warn">
+        <span class="callout-icon">&#9888;</span>
+        <span><strong>禁止行为：</strong>谐音提示、位置暗示、数字暗示、字数笔画、直接念词、外语翻译</span>
+      </div>
+      <div class="callout callout-tip">
+        <span class="callout-icon">&#128161;</span>
+        <span><strong>正确做法：</strong>提示必须与词语的<span class="em">含义本身</span>相关联！</span>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">8</div>
+        <div class="section-title">提示词怎么写才好？</div>
+      </div>
+      <table class="info-table">
+        <tr><th>词语</th><th>❌ 太直白</th><th>✅ 好提示</th></tr>
+        <tr><td>奶牛</td><td>白色、动物、牛奶</td><td>铁桶（挤奶用）</td></tr>
+        <tr><td>意志</td><td>坚持、决心</td><td>红旗（意志的象征）</td></tr>
+        <tr><td>教练</td><td>体育、训练</td><td>运动（关联场景）</td></tr>
+      </table>
+      <div class="callout">
+        <span class="callout-icon">&#128203;</span>
+        <span>核心技巧：找到<span class="em">"队友能懂、对方难猜"</span>的平衡点</span>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">9</div>
+        <div class="section-title">进阶策略</div>
+      </div>
+      <ul class="item-list">
+        <li><span class="em">加密者</span> — 避免过于直白，选择抽象关联；随轮次变化描述角度</li>
+        <li><span class="em">破译者</span> — 理解队友的描述习惯，快速联想</li>
+        <li><span class="em">拦截者</span> — 利用历史提示归纳词语特征；后期成功率更高</li>
+      </ul>
+      <div class="callout callout-tip">
+        <span class="callout-icon">&#128161;</span>
+        <span><strong>信息积累效应：</strong>越到后期，对方越容易推断你方词语，要注意变化策略！</span>
+      </div>
+    </div>
+    <hr class="divider">
+
+    <div class="section">
+      <div class="section-header">
+        <div class="section-num">10</div>
+        <div class="section-title">平局怎么处理？</div>
+      </div>
+      <ul class="item-list">
+        <li>8轮后仍未分胜负，进入平局处理</li>
+        <li><span class="em">计分比较</span>：拦截+1分，错误-1分，高分者胜</li>
+        <li><span class="em">词语猜测</span>：若仍平局，各队猜对方4个题目词语</li>
+      </ul>
+    </div>
+
+    <div class="spacer"></div>
+    <div class="footer-note">截码战 Decrypto</div>
+  </div>
+  <span class="page-num">3 / 3</span>
+</div>
+</body>
+</html>

@@ -1,6 +1,6 @@
 ---
 name: boardgame-rule-graphic
-description: "桌游规则讲解图生成。将桌游规则文本转化为一页纸可视化速查图，遵循国际通用教学框架（主题-目标-流程-细节-补充）。当用户需要生成桌游规则图、教学图、速查卡时调用。关键词：规则图、教学、一页纸、速查。"
+description: "桌游规则讲解图生成。同时执行 ImageGen（AI生成风格图）和 /text-to-infographic（HTML信息图），双轨并行输出规则速查图。当用户需要生成桌游规则图、教学图、速查卡时调用。关键词：规则图、教学、一页纸、速查。"
 ---
 
 # 规则讲解图生成
@@ -89,15 +89,112 @@ description: "桌游规则讲解图生成。将桌游规则文本转化为一页
 - P2：核心回合流程
 - P3：进阶规则 + 常见误区
 
-## Prompt 构建模板
+## 执行流程
 
-生成图片时，使用 ImageGen 工具，Prompt 遵循以下结构：
+> **双轨并行**：同时执行 ImageGen 和 `/text-to-infographic`，输出两种风格的规则图供用户选择
+
+### 步骤 1：确认输入
+
+1. 确认规则文件路径：`{游戏目录}/规则文件.md` 或从上下文摘要获取
+2. 确定输出模式：
+   - 规则简单（≤5 个核心步骤）→ `longform`（单页长图）
+   - 规则复杂（>5 个核心步骤或含变体）→ `multipage`（3:4 多页图）
+3. 提取规则核心要素：主题、目标、流程、细节、警示
+
+### 步骤 2：双轨并行生成
+
+#### 2A：ImageGen 生成（AI 风格图）
+
+使用 ImageGen 工具生成 1 张规则速查图（768x1024）：
+
+**Prompt 模板**：
+```
+A clear, visually organized board game rule reference card for "{游戏名}".
+Style: [clean infographic / warm illustrated / minimalist flat design].
+Layout: Title at top, game theme and win condition below, main flow chart in center (50%), action icons grid, warning box at bottom.
+Color scheme: [配色方案，与风格线一致].
+Content highlights: [核心流程要点，如"5 steps: Deal → Play → Draw → Special → Score"].
+IMPORTANT: All text must be in Chinese characters (汉字), clearly legible.
+768x1024 portrait, informational graphic design, high readability.
+```
+
+**输出**：`{游戏名}_规则图_AI.png`
+
+#### 2B：text-to-infographic 生成（HTML 信息图）
+
+执行命令：
+```
+/text-to-infographic {规则文件路径}
+```
+
+**参数**：
+- `source_file`：规则 Markdown 文件路径
+- `output_mode`：`longform` 或 `multipage`
+- `theme_name`：游戏名称
+
+**输出**：
+- `{游戏名}_信息图.html`
+- `{游戏名}_P1.png`、`{游戏名}_P2.png`...（multipage 模式）
+- 或 `{游戏名}_长图.png`（longform 模式）
+
+### 步骤 3：输出归档
+
+生成完成后，将所有输出文件归档到阶段目录：
 
 ```
-A clear, visually organized board game rule reference card for "游戏名".
-[风格描述：clean infographic / warm illustrated / minimalist flat design].
-Layout: [布局描述].
-Color scheme: [配色方案，与风格线一致].
-Text elements: [文字内容要点].
-Style: informational graphic design, high readability, 768x1024 portrait.
+{游戏目录}/{版本号}/02_rule-graphic/
+├── output/
+│   ├── {游戏名}_规则图_AI.png      # ImageGen 生成
+│   ├── {游戏名}_信息图.html        # HTML 源文件
+│   ├── {游戏名}_P1.png             # text-to-infographic 分页
+│   ├── {游戏名}_P2.png
+│   └── ...
+└── stage_summary.md                # 阶段摘要
+```
+
+### 步骤 4：用户选择
+
+展示两种输出供用户比较：
+
+| 类型 | 特点 | 适用场景 |
+|------|------|---------|
+| ImageGen（AI风格图） | 视觉冲击强、风格独特 | 社交媒体封面、吸引眼球 |
+| text-to-infographic（HTML信息图） | 文字清晰、信息完整 | 实际教学、规则速查 |
+
+用户可选择：
+- 使用其中一种
+- 两种都保留
+- 要求修改后重新生成
+
+---
+
+## stage_summary.md 模板
+
+```markdown
+# 规则讲解图生成 执行摘要
+
+- **状态**：✅ 已完成
+- **执行时间**：{日期}
+- **阶段**：Step 2
+
+---
+
+## 关键决策
+
+1. 采用 {单页版/分页版} 布局（规则复杂度：{简单/中等/复杂}）
+2. 双轨并行：ImageGen + text-to-infographic
+3. 遵循国际教学框架：主题→目标→流程→细节→警示
+
+## 主要输出
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| {游戏名}_规则图_AI.png | ImageGen | AI生成风格图（768x1024） |
+| {游戏名}_P1.png | HTML信息图 | 规则速查图第1页 |
+| {游戏名}_P2.png | HTML信息图 | 规则速查图第2页 |
+| ... | ... | ... |
+
+## 传递下游
+
+- 无需传递下游（规则图为独立交付物）
 ```

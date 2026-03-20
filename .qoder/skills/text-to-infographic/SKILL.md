@@ -693,3 +693,105 @@ body {
   longform: fullPage=true
   multipage: 逐个 .page 元素截图（通过 take_snapshot 获取 uid）
 ```
+
+---
+
+## 八、高清截图技术方案
+
+> **核心原理**：通过 `deviceScaleFactor` 设置设备像素比，实现 2x/3x 高清输出
+
+### 8.1 清晰度配置
+
+| 配置项 | 标准清晰度 | 高清（推荐） | 超高清 |
+|--------|-----------|-------------|--------|
+| deviceScaleFactor | 1 | **2** | 3 |
+| 输出分辨率（768x1024） | 768x1024 | **1536x2048** | 2304x3072 |
+| 文件大小 | ~80KB | ~200KB | ~400KB |
+| 适用场景 | 预览 | **小红书发布** | 印刷品 |
+
+### 8.2 Puppeteer 高清截图脚本模板
+
+用户确认导出时，生成以下脚本到 `output/screenshot.mjs`：
+
+```javascript
+import puppeteer from 'puppeteer';
+
+// ══════════════════════════════════════════════════════════════
+// 高清截图配置
+// ══════════════════════════════════════════════════════════════
+const CONFIG = {
+  htmlFile: '{theme}_信息图.html',      // HTML 文件名
+  outputPrefix: '{theme}',              // 输出文件前缀
+  deviceScaleFactor: 2,                 // 设备像素比（2=高清，3=超高清）
+  waitTime: 2000,                       // 字体加载等待时间（毫秒）
+};
+
+// ══════════════════════════════════════════════════════════════
+// 执行截图
+// ══════════════════════════════════════════════════════════════
+const browser = await puppeteer.launch({ headless: true });
+const page = await browser.newPage();
+
+console.log('📄 正在导出高清信息图...');
+console.log(`   设备像素比: ${CONFIG.deviceScaleFactor}x`);
+
+// 设置高清视口
+await page.setViewport({
+  width: 820,
+  height: 1100,
+  deviceScaleFactor: CONFIG.deviceScaleFactor,
+});
+
+// 加载页面
+const htmlPath = new URL(CONFIG.htmlFile, import.meta.url).pathname;
+await page.goto(`file://${htmlPath}`, { waitUntil: 'networkidle0' });
+
+// 等待字体加载完成
+await page.waitForFunction(() => document.fonts.ready);
+await new Promise(r => setTimeout(r, CONFIG.waitTime));
+
+// 逐页截图
+const pages = await page.$$('.page');
+if (pages.length > 0) {
+  // multipage 模式
+  for (let i = 0; i < pages.length; i++) {
+    const filename = `${CONFIG.outputPrefix}_P${i + 1}.png`;
+    await pages[i].screenshot({ path: filename, omitBackground: false });
+    console.log(`✅ 已导出: ${filename} (${CONFIG.deviceScaleFactor}x 高清)`);
+  }
+} else {
+  // longform 模式
+  const card = await page.$('.card');
+  if (card) {
+    const filename = `${CONFIG.outputPrefix}_长图.png`;
+    await card.screenshot({ path: filename, omitBackground: false });
+    console.log(`✅ 已导出: ${filename} (${CONFIG.deviceScaleFactor}x 高清)`);
+  }
+}
+
+await browser.close();
+console.log('\n🎉 全部导出完成！');
+```
+
+### 8.3 执行步骤
+
+1. **安装依赖**（首次执行）：
+   ```bash
+   cd {output_dir} && npm install puppeteer --no-save
+   ```
+
+2. **执行截图**：
+   ```bash
+   cd {output_dir} && node screenshot.mjs
+   ```
+
+### 8.4 清晰度对比
+
+| 指标 | 1x（旧方案） | 2x（新方案） |
+|------|-------------|-------------|
+| 文字边缘 | 锯齿明显 | 平滑清晰 |
+| 图标细节 | 模糊 | 锐利 |
+| 小红书显示 | 放大后糊 | 放大后仍清晰 |
+| Retina 屏 | 不适配 | 完美适配 |
+
+> **建议**：小红书发布建议使用 `deviceScaleFactor: 2`，印刷品使用 `deviceScaleFactor: 3`。
