@@ -21,6 +21,8 @@
 │   └── SKILL.md
 ├── boardgame-publisher/           ← 阶段7：半自动发布到小红书
 │   └── SKILL.md
+├── boardgame-story-extractor/      ← 独立：实战字幕故事提炼
+│   └── SKILL.md
 ├── xiaohongshu-boardgame-analyzer/ ← 独立：小红书内容分析与选题
 │   └── SKILL.md
 ├── content-writing/               ← 通用内容创作
@@ -88,6 +90,7 @@
 | boardgame-copywriting/ | 撰写小红书风格的标题、正文和 Hashtag | 4 种标题公式、6 段正文结构、热点适配 | ← 依赖 input-collector 上下文 | ✅ |
 | boardgame-posting-strategy/ | 提供发帖策略和 A/B 测试方案 | 发布时间建议、评论区运营 | ← 依赖 copywriting 文案输出 | ✅ |
 | boardgame-publisher/ | 半自动发布笔记到小红书创作者平台 | 浏览器自动填充、A/B 版本管理 | ← 依赖所有前序阶段输出 | ✅ |
+| boardgame-story-extractor/ | 从实战视频字幕提炼活人感故事片段 | 翻译式提炼、6类故事分类、多人对话 | ← 引用 writing-style + rule-structure 规则 | ✅ |
 | xiaohongshu-boardgame-analyzer/ | 分析小红书桌游热门内容并生成选题库 | 浏览器采集、数据分析 | ← 引用 rules/ 下分析规则 | ✅ |
 | content-writing/ | 通用内容创作，自动匹配写作模式 | 风格指导/完整流程/组合模式 | ← 引用 rules/ 下写作规则 | ✅ |
 | text-to-infographic/ | 将文本文件转为橙白风格信息图 PNG | HTML→截图→PNG、多页/长图 | - | ✅ |
